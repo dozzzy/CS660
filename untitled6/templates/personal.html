@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<script src="{{url_for('static', filename='jquery-3.2.1.min.js')}}"></script>
+<script>
+$(".a_post").on("click",function(event){
+    event.preventDefault();//使a自带的方法失效，即无法调整到href中的URL(http://www.baidu.com)
+    $.ajax({
+           type: "POST",
+           url: "/album",
+           contentType:"application/json",
+           data: JSON.stringify({param1:id}),//参数列表
+           dataType:"json",
+           success: function(result){
+
+           },
+           error: function(result){
+
+           }
+    });
+});
+</script>
+
+<body>
+ <li>hello</li>{{ user[0][0] }}
+ {% if friends %}
+    <ul>
+	    {% for row in friends %}
+	    <li>
+		    {{row}}
+	    </li>
+	    {% endfor %}
+    </ul>
+ {% endif %}
+ {% if albums %}
+    <ul>
+	    {% for row in albums %}
+	    <li>
+            <a href="/album?album_id={{ row[0] }}" >  {{row}}</a>
+	    </li>
+	    {% endfor %}
+    </ul>
+ {% endif %}
+ <form action="/addAlbum/" method="post">
+     <input type="text" name="name">
+     <input type="submit"  name="new album">
+ </form>
+</body>
+</html>

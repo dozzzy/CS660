@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+  {% if album %}
+    <ul>
+	    {% for row in album %}
+	    <li>
+		    {{row}}
+	    </li>
+	    {% endfor %}
+    </ul>
+ {% endif %}
+  {% if photo %}
+    <ul>
+	    {% for row in photo %}
+	        {% for unit in range(3) %}
+                <li>
+		            {{row[unit]}}
+	            </li>
+	        {% endfor %}
+        <img src="{{ row[4] }}"/>
+        {% endfor %}
+    </ul>
+ {% endif %}
+  {% if album[0][3]==user_id %}
+  <form action="addPhoto" method="post" enctype="multipart/form-data">
+      <input type="text" name="album_id"readonly="readonly" value={{ album[0][0] }} >
+      <input type="file" name="photo">
+      <input type="text" name="caption">
+      <input type="submit">
+  </form>
+    {% endif %}
+</body>
+</html>
