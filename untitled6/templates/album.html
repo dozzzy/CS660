@@ -23,6 +23,9 @@
 	            </li>
 	        {% endfor %}
         <img src="{{ row[4] }}"/>
+           {% if album[0][3]==user_id %}
+            <a href="/deletePhoto?photo_id={{ row[0] }}">delete this photo</a>
+            {% endif %}
         {% endfor %}
     </ul>
  {% endif %}
@@ -31,6 +34,8 @@
       <input type="text" name="album_id"readonly="readonly" value={{ album[0][0] }} >
       <input type="file" name="photo">
       <input type="text" name="caption">
+      <label>tag</label>
+      <input type="text" name="tags">
       <input type="submit">
   </form>
     {% endif %}

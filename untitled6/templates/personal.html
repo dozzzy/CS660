@@ -26,9 +26,20 @@ $(".a_post").on("click",function(event){
 
 <body>
  <li>hello</li>{{ user[0][0] }}
+ <label>friends</label>
  {% if friends %}
     <ul>
 	    {% for row in friends %}
+	    <li>
+		    {{row}}
+	    </li>
+	    {% endfor %}
+    </ul>
+ {% endif %}
+ <label>recommend friends</label>
+  {% if rfriends %}
+    <ul>
+	    {% for row in rfriends %}
 	    <li>
 		    {{row}}
 	    </li>
@@ -41,12 +52,17 @@ $(".a_post").on("click",function(event){
 	    <li>
             <a href="/album?album_id={{ row[0] }}" >  {{row}}</a>
 	    </li>
-	    {% endfor %}
+            <a href="/deleteAlbum?album_id={{ row[0] }}" >delete this album</a>
+        {% endfor %}
     </ul>
  {% endif %}
  <form action="/addAlbum/" method="post">
      <input type="text" name="name">
      <input type="submit"  name="new album">
+ </form>
+<form action="/myPhotoSearch/" method="post">
+     <input type="text" name="tags">search by tags
+     <input type="submit">
  </form>
 </body>
 </html>

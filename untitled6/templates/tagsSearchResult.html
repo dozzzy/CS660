@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form action="/search" method="post">
+    <input type="hidden" name="searchType" value="tags">
+    <input type="text" name="searchContent">
+    <input type="submit">
+</form>
+{% if photo_ids %}
+    <ul>
+	    {% for row in photo_ids %}
+	    <li>
+		    {{row}}
+	    </li>
+	    {% endfor %}
+    </ul>
+{% else %}
+        <h1>no picture found</h1>
+{% endif %}
+</body>
+</html>
