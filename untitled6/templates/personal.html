@@ -26,6 +26,7 @@ $(".a_post").on("click",function(event){
 
 <body>
  <li>hello</li>{{ user[0][0] }}
+ Below prints all friends relationship
  {% if friends %}
     <ul>
 	    {% for row in friends %}
@@ -35,6 +36,7 @@ $(".a_post").on("click",function(event){
 	    {% endfor %}
     </ul>
  {% endif %}
+ Below print all albums (album is a hyperlink)
  {% if albums %}
     <ul>
 	    {% for row in albums %}
