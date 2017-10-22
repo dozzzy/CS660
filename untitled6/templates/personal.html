@@ -25,8 +25,8 @@ $(".a_post").on("click",function(event){
 </script>
 
 <body>
- <li>hello</li>{{ user[0][0] }}
- Below prints all friends relationship
+ <li>hello</li>{{ user[0][0] }} <br/>
+ Below prints all friends relationship <br/>
  {% if friends %}
     <ul>
 	    {% for row in friends %}
@@ -36,6 +36,18 @@ $(".a_post").on("click",function(event){
 	    {% endfor %}
     </ul>
  {% endif %}
+
+ Below prints recommended friends, format:(suggest_id, # of common friend) <br/>
+ {% if suggest_fri_list %}
+     <ul>
+	    {% for row in suggest_fri_list %}
+	    <li>
+		    suggest :( {{row[0]}}, {{ row[1] }} )
+	    </li>
+	    {% endfor %}
+    </ul>
+ {% endif %}
+
  Below print all albums (album is a hyperlink)
  {% if albums %}
     <ul>

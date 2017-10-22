@@ -92,7 +92,9 @@ def personal():
         sql2 = "select * from albums a where a.user_id='" + user_id + "'"
         albums = excuteQuery(sql2)
         print(albums)
-        return render_template('personal.html', user=user, friends=friends, albums=albums)
+        suggest_friend = recommendFriends(user_id)
+        return render_template('personal.html', user=user, friends=friends, albums=albums,
+                               suggest_fri_list=suggest_friend)
 
 
 @app.route('/addAlbum/', methods=['POST', 'GET'])
@@ -210,7 +212,7 @@ def addComment():
             sql = 'insert into comments(content,date_of_comment,user_id,photo_id) ' \
                   'values (\'{0}\',\'{1}\',\'{2}\',\'{3}\');'.format(content, date_of_comment, user_id,
                    photo_id)
-            excuteQuery(sql)ㄓ
+            excuteQuery(sql)
             info_dict = getPhotoRequire(photo_id)
             # return render_template('tmp.html', toprint='called to photo')
             return render_template('photo.html', photo_id=photo_id,
@@ -252,6 +254,38 @@ def addLike():
                                img_path=info_dict['img_path'],
                                comments=info_dict['all_comments'],
                                likes=info_dict['likes'], message=message)
+
+
+def getFriendList(user_id):
+    sql = 'select ' \
+          'case f.user_id1 ' \
+          '  when \'{0}\' then f.user_id2 ' \
+          '  else f.user_id1 ' \
+          'end ' \
+          'from friends f ' \
+          'where f.user_id1 = \'{1}\' or f.user_id2 = \'{2}\''.format(
+        user_id, user_id, user_id)
+    print(sql)
+    friend_list = excuteQuery(sql)
+    friend_list = [x[0] for x in friend_list]
+    return friend_list
+
+def recommendFriends(user_id):
+    user_friend_list = getFriendList(user_id)
+    hash_cnt = {}
+    for f1 in user_friend_list:
+        fri_of_friend = getFriendList(f1)
+        for f2 in fri_of_friend:
+            if f2 not in user_friend_list and f2 != str(user_id):
+                if f2 in hash_cnt:
+                    hash_cnt[f2]=hash_cnt[f2]+1
+                else:
+                    hash_cnt[f2]=1
+
+    suggest_fri_list = list(hash_cnt.items())
+    suggest_fri_list = sorted(suggest_fri_list, key=lambda x: x[1], reverse=True)
+    suggest_fri_list = [x for x in suggest_fri_list if x[1]>=2]
+    return suggest_fri_list
 
 
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
