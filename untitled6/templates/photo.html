@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+photo ID: {{ photo_id }} <br/>
+
+<img src="{{ img_path }}"/> <br/>
+
+Like the photo ?
+<form action="/addLike/" method="post">
+     <input type="submit"  name="new comment" value="LIKE!">
+     <input type="text" name="photo_id" readonly="readonly" value={{ photo_id }}>
+</form>
+{% if like_message %}
+    <p style="color:#FF0000";>{{ like_message }}</p>
+{% endif %}
+
+{% if likes %}
+There are total {{ likes|length }} likes <br/>
+    <ul>
+    {% for row in likes%}
+        <li>
+        {{ row[0] }}
+        </li>
+    {% endfor %}
+    </ul>
+{% endif %}
+
+ALL COMMENTS BELOW <br/>
+{% if comments %}
+    {% for row in comments %}
+        <ul>
+        {{ row[0] }} says : {{ row[1] }}
+        </ul>
+    {% endfor %}
+{% endif %}
+
+leave a comment: <br/>
+{% if comment_message %}
+    <p style="color:#FF0000";>{{ comment_message }}</p>
+{% endif %}
+
+<form action="/addComment/" method="post">
+     <input type="text" name="photo_id" readonly="readonly" value={{ photo_id }}>
+     <input type="text" name="content">
+     <input type="submit"  name="new comment">
+</form>
+
+</body>
+</html>

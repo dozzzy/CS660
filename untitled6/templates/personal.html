@@ -25,8 +25,8 @@ $(".a_post").on("click",function(event){
 </script>
 
 <body>
- <li>hello</li>{{ user[0][0] }}
- <label>friends</label>
+ <li>hello</li>{{ user[0][0] }} <br/>
+ Below prints all friends relationship <br/>
  {% if friends %}
     <ul>
 	    {% for row in friends %}
@@ -36,16 +36,30 @@ $(".a_post").on("click",function(event){
 	    {% endfor %}
     </ul>
  {% endif %}
- <label>recommend friends</label>
-  {% if rfriends %}
-    <ul>
+
+ Below prints recommended friends, format:(suggest_id, # of common friend) <br/>
+ {% if rfriends %}
+     <ul>
 	    {% for row in rfriends %}
 	    <li>
-		    {{row}}
+		    suggest :( {{ row }} )
 	    </li>
 	    {% endfor %}
     </ul>
  {% endif %}
+
+ Below prints recommended photos, format:(photo_id, #of matched, #of unmatched(-)) <br/>
+{% if rphotos %}
+    <ul>
+	    {% for row in rphotos %}
+	    <li>
+		    suggest :( {{ row }} )
+	    </li>
+	    {% endfor %}
+    </ul>
+{% endif %}
+
+ Below print all albums (album is a hyperlink)
  {% if albums %}
     <ul>
 	    {% for row in albums %}
@@ -53,11 +67,11 @@ $(".a_post").on("click",function(event){
             <a href="/album?album_id={{ row[0] }}" >  {{row}}</a>
 	    </li>
             <a href="/deleteAlbum?album_id={{ row[0] }}" >delete this album</a>
-        {% endfor %}
+	    {% endfor %}
     </ul>
  {% endif %}
  <form action="/addAlbum/" method="post">
-     <input type="text" name="name">
+     <input type="text" name="name">add new album
      <input type="submit"  name="new album">
  </form>
 <form action="/myPhotoSearch/" method="post">
