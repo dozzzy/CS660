@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+ {% if ouser %}
+    <ul>
+	    {% for row in ouser %}
+	    <li>
+		    {{row}}
+	    </li>
+	    {% endfor %}
+    </ul>
+ {% endif %}
+ {% if user_id %}
+     {% if addf %}
+ <li>
+     you are already friends
+
+ </li>
+{% else %}
+<li>
+    <a href="/addFriend?ouser_id={{ ouser[0][0] }}">add friend</a>
+</li>
+{% endif %}
+ {% else %}
+<li>
+    you can add friend after log in
+</li>
+ {% endif %}
+ {% if albums %}
+    <ul>
+	    {% for row in albums %}
+	    <li>
+            <a href="/album?album_id={{ row[0] }}" >  {{row}}</a>
+	    </li>
+        {% endfor %}
+    </ul>
+ {% endif %}
+</body>
+</html>
