@@ -159,7 +159,7 @@ def deleteAlbum():
     albums = excuteQuery(sql2)
     return render_template('personal.html', user=user, friends=friends, albums=albums)
 
-
+@app.route('/addAlbum/addPhoto', methods=['POST', 'GET'])
 @app.route('/album/addPhoto', methods=['POST', 'GET'])
 def addPhoto():
     if request.method=="POST":
@@ -477,7 +477,7 @@ def youMayLike(user_id):
     tag_n_count, all_my_photos = getMyMostUsedTags(user_id) #format:(tag, count)
     all_my_photos = [x[0] for x in all_my_photos]
     tag_n_count= sorted(tag_n_count, key=lambda x: x[1], reverse=True) #ties break as python impl
-    target_tags = tag_n_count[0:min(len(tag_n_count),5)-1]
+    target_tags = tag_n_count[0:min(len(tag_n_count),5)]
 
     # query candidate photos
     where_condition = str()
