@@ -48,6 +48,17 @@ $(".a_post").on("click",function(event){
     </ul>
  {% endif %}
 
+ Below prints recommended photos, format:(photo_id, #of matched, #of unmatched(-)) <br/>
+{% if rphotos %}
+    <ul>
+	    {% for row in rphotos %}
+	    <li>
+		    suggest :( {{ row }} )
+	    </li>
+	    {% endfor %}
+    </ul>
+{% endif %}
+
  Below print all albums (album is a hyperlink)
  {% if albums %}
     <ul>
@@ -60,7 +71,7 @@ $(".a_post").on("click",function(event){
     </ul>
  {% endif %}
  <form action="/addAlbum/" method="post">
-     <input type="text" name="name">
+     <input type="text" name="name">add new album
      <input type="submit"  name="new album">
  </form>
 <form action="/myPhotoSearch/" method="post">
