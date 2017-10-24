@@ -38,11 +38,11 @@ $(".a_post").on("click",function(event){
  {% endif %}
 
  Below prints recommended friends, format:(suggest_id, # of common friend) <br/>
- {% if suggest_fri_list %}
+ {% if rfriends %}
      <ul>
-	    {% for row in suggest_fri_list %}
+	    {% for row in rfriends %}
 	    <li>
-		    suggest :( {{row[0]}}, {{ row[1] }} )
+		    suggest :( {{ row }} )
 	    </li>
 	    {% endfor %}
     </ul>
@@ -55,12 +55,17 @@ $(".a_post").on("click",function(event){
 	    <li>
             <a href="/album?album_id={{ row[0] }}" >  {{row}}</a>
 	    </li>
+            <a href="/deleteAlbum?album_id={{ row[0] }}" >delete this album</a>
 	    {% endfor %}
     </ul>
  {% endif %}
  <form action="/addAlbum/" method="post">
      <input type="text" name="name">
      <input type="submit"  name="new album">
+ </form>
+<form action="/myPhotoSearch/" method="post">
+     <input type="text" name="tags">search by tags
+     <input type="submit">
  </form>
 </body>
 </html>

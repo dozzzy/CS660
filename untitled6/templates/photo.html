@@ -14,8 +14,8 @@ Like the photo ?
      <input type="submit"  name="new comment" value="LIKE!">
      <input type="text" name="photo_id" readonly="readonly" value={{ photo_id }}>
 </form>
-{% if message %}
-    <p style="color:#FF0000";>{{ message }}</p>
+{% if like_message %}
+    <p style="color:#FF0000";>{{ like_message }}</p>
 {% endif %}
 
 {% if likes %}
@@ -39,6 +39,10 @@ ALL COMMENTS BELOW <br/>
 {% endif %}
 
 leave a comment: <br/>
+{% if comment_message %}
+    <p style="color:#FF0000";>{{ comment_message }}</p>
+{% endif %}
+
 <form action="/addComment/" method="post">
      <input type="text" name="photo_id" readonly="readonly" value={{ photo_id }}>
      <input type="text" name="content">

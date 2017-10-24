@@ -17,28 +17,37 @@
   {% if photo %}
     <ul>
 	    {% for row in photo %}
-            photo_id, photo name, album_id
+            <br/>photo_id, photo name, album_id <br/>
 	        {% for unit in range(3) %}
                 <li>
 		            {{row[unit]}}
 	            </li>
 	        {% endfor %}
 	        <li>
-                <a href="/photo?photo_id={{ row[0] }}" >  Goto this photo</a>
+                <a href="/photo?photo_id={{ row[0] }}" >  Goto this photo's comment</a>
+                {% if album[0][3]==user_id %}
+                <a href="/deletePhoto?photo_id={{ row[0] }}">delete this photo</a>
+            {% endif %}
 	        </li>
-    </ul>
         <img src="{{ row[4] }}"/>
+
         {% endfor %}
     </ul>
  {% endif %}
   {% if album[0][3]==user_id %}
+
   <form action="addPhoto" method="post" enctype="multipart/form-data">
-  post new photo to somewhere
-      <input type="text" name="album_id" readonly="readonly" value={{ album[0][0] }} >
+      <label>add to album:</label>
+      <input type="text" name="album_id"readonly="readonly" value={{ album[0][0] }} >
+      <label>select file:</label>
       <input type="file" name="photo">
+      <label>title</label>
       <input type="text" name="caption">
+      <label>tag</label>
+      <input type="text" name="tags">
       <input type="submit">
   </form>
+
     {% endif %}
 </body>
 </html>

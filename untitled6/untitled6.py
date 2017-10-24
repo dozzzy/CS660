@@ -7,7 +7,7 @@ import os
 import json
 
 app = Flask(__name__)
-db = mysql.connector.connect(user='root', host='127.0.0.1', password='jerry791201', database='proj1')
+db = mysql.connector.connect(user='root', host='127.0.0.1', password='jerry791201', database='new_proj1')
 
 
 def excuteQuery(sql):
@@ -92,9 +92,16 @@ def personal():
         sql2 = "select * from albums a where a.user_id='" + user_id + "'"
         albums = excuteQuery(sql2)
         print(albums)
-        suggest_friend = recommendFriends(user_id)
+        #rfriends = recommendFriends(user_id)
+        sqlrf = "select f.user_id2,count(f.user_id2) from friends f WHERE \
+                    user_id1 in (select f.user_id2 from friends f where f.user_id1='%s') \
+                    and user_id2<>'%s' \
+                    and user_id2 not in (select f.user_id2 from friends f where f.user_id1='%s') \
+                    GROUP BY(f.user_id2) \
+                    ORDER BY count(f.user_id2) DESC" % (user_id, user_id, user_id)
+        rfriends = excuteQuery(sqlrf)
         return render_template('personal.html', user=user, friends=friends, albums=albums,
-                               suggest_fri_list=suggest_friend)
+                               rfriends=rfriends)
 
 
 @app.route('/addAlbum/', methods=['POST', 'GET'])
@@ -132,42 +139,112 @@ def album():
     photo = excuteQuery(sql3)
     return render_template('album.html', user_id=user_id, album=album, photo=photo, base64=base64)
 
+@app.route('/deleteAlbum/',methods=['POST','GET'])
+def deleteAlbum():
+    print('deleteAlbum start')
+    album_id = request.args.get('album_id')
+    if 'user_id' in session:
+        user_id=session['user_id']
+    sql0 = "delete from albums where album_id= %s" % (album_id)
+    excuteQuery(sql0)
+    sql = "select * from friends f where f.user_id1='" + user_id + "' or f.user_id2='" + user_id + "'"
+    sql1 = "select * from users u where u.user_id='" + user_id + "'"
+    user = excuteQuery(sql1)
+    friends = excuteQuery(sql)
+    sql2 = "select * from albums a where a.user_id='" + user_id + "'"
+    albums = excuteQuery(sql2)
+    return render_template('personal.html', user=user, friends=friends, albums=albums)
+
 
 @app.route('/album/addPhoto', methods=['POST', 'GET'])
 def addPhoto():
-    print('enter addPhoto')
-    if request.method == "POST":
+    if request.method=="POST":
+        print('enter addPhoto post')
         if 'user_id' in session:
-            user_id = session['user_id']
-        photoForm = request.form
-        album_id = photoForm['album_id']
+            user_id=session['user_id']
+        photoForm=request.form
+        album_id=photoForm['album_id']
         print(album_id)
-        caption = photoForm['caption']
+        caption=photoForm['caption']
         print(caption)
-        photoFile = request.files['photo']
+        tags=photoForm['tags']
+        print(tags)
+        tag=[]
+        tag=tags.split(' ')
+        photoFile=request.files['photo']
         ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-        dir = ROOT_DIR + '\static\img'
-        sql0 = "select max(p.photo_id) from photos p"
-        pp = excuteQuery(sql0)
-        fn = pp[0][0] + 1
+        dir=ROOT_DIR+'\static\img'
+        sql0="select max(p.photo_id) from photos p"
+        pp=excuteQuery(sql0)
+        fn=pp[0][0]+1
         print(fn)
         if photoFile:
-            filename = str(fn) + '.' + photoFile.filename.rsplit('.', 1)[1]
+            filename=str(fn)+ '.'+photoFile.filename.rsplit('.', 1)[1]
             print(filename)
-            path = '/static/img/' + filename
-            photoFile.save(dir + '\\' + filename)
+            path='/static/img/'+filename
+            photoFile.save(dir+'\\'+filename)
         sql = "insert into photos(caption,path,album_id) values ('%s','%s','%s') ;" % (
-            caption, path, album_id)
+        caption, path, album_id)
         print(sql)
         excuteQuery(sql)
-        sql2 = "select * from albums a where a.album_id= %s" % (album_id)
-        album = excuteQuery(sql2)
-        sql3 = "select * from photos p where p.album_id= %s" % (album_id)
-        photo = excuteQuery(sql3)
-        return render_template('album.html', user_id=user_id, album=album, photo=photo)
+        print('photo added')
+        for i in range(len(tag)):
+            if tag[i]:
+                tagsql0="select * from tags t where t.tag='%s'" % (tag[i])
+                tt=excuteQuery(tagsql0)
+                if tt==[]:
+                    print('add tag')
+                    tagsql1="insert into tags(tag) values ('%s')" % (tag[i])
+                    excuteQuery(tagsql1)
+                sql = 'select photo_id from photos where path=\'{0}\''.format(path)
+                photo_id = excuteQuery(sql)[0][0]
+                print('inserted photo id = '+str(photo_id))
+                tagsql="insert into associate(tag,photo_id) values('%s',%d)" % (tag[i],photo_id)
+                print(tagsql)
+                excuteQuery(tagsql)
+
+        sql2="select * from albums a where a.album_id= %s" % (album_id)
+        album=excuteQuery(sql2)
+        sql3="select * from photos p where p.album_id= %s" % (album_id)
+        photo=excuteQuery(sql3)
+        return render_template('album.html',user_id=user_id,album=album,photo=photo)
     else: # request.method =="GET":
         toprint="/album/addPhoto"
         return render_template('tmp.html', toprint=toprint)
+
+@app.route('/userProfile',methods=['GET'])
+def userProfile():
+    if 'user_id' in session:
+        user_id = session['user_id']
+    else:
+        user_id=''
+    ouser_id=request.args.get('ouser_id')
+    sql1 = "select * from users u where u.user_id='" + ouser_id + "'"
+    ouser = excuteQuery(sql1)
+    sql2 = "select * from albums a where a.user_id='" + ouser_id + "'"
+    albums = excuteQuery(sql2)
+    sql3 = "select * from friends f where (f.user_id1= '%s' and f.user_id2= '%s') or (f.user_id1= '%s' and f.user_id2= '%s')" % (user_id,ouser_id,ouser_id,user_id)
+    print(sql3)
+    addf=excuteQuery(sql3)
+    return render_template('userProfile.html', ouser=ouser, user_id=user_id, albums=albums, addf=addf)
+
+
+@app.route('/deletePhoto', methods=['POST','GET'])
+def deletePhoto():
+    if request.method=="GET":
+        print('deleteAlbum start')
+        photo_id = request.args.get('photo_id')
+        sql="select * from photos p where p.photo_id= %s" % (photo_id)
+        album_id=excuteQuery(sql)[0][2]
+        if 'user_id' in session:
+            user_id = session['user_id']
+        sql0 = "delete from photos where photo_id= %s" % (photo_id)
+        excuteQuery(sql0)
+        sql2="select * from albums a where a.album_id= %s" % (album_id)
+        album=excuteQuery(sql2)
+        sql3="select * from photos p where p.album_id= %s" % (album_id)
+        photo=excuteQuery(sql3)
+        return render_template('album.html',user_id=user_id,album=album,photo=photo)
 
 @app.route('/photo/', methods=['POST', 'GET'])
 def photo():
@@ -184,8 +261,8 @@ def photo():
 def getPhotoRequire(photo_id):
     sql = 'select user_id, content from comments where photo_id = {0}'.format(photo_id)
     all_comments = excuteQuery(sql)
-    for que in all_comments:
-        print(que[0], ' says: ', que[1])
+    #for que in all_comments:
+    #    print(que[0], ' says: ', que[1])
     sql = 'select path from photos where photo_id = {0}'.format(photo_id)
     img_path = excuteQuery(sql)
     img_path = img_path[0][0]
@@ -193,6 +270,22 @@ def getPhotoRequire(photo_id):
     likes = excuteQuery(sql)
     return {'img_path':img_path, 'all_comments':all_comments,'likes':likes}
 
+
+@app.route('/addFriend',methods=['GET'])
+def addFriend():
+    if 'user_id' in session:
+        user_id = session['user_id']
+    ouser_id=request.args.get('ouser_id')
+    sql="insert into friends(user_id1,user_id2) value('%s','%s')" % (user_id,ouser_id)
+    sqlt="insert into friends(user_id1,user_id2) value('%s','%s')" % (ouser_id,user_id)
+    excuteQuery(sql)
+    excuteQuery(sqlt)
+    sql1 = "select * from users u where u.user_id='" + ouser_id + "'"
+    ouser = excuteQuery(sql1)
+    sql2 = "select * from albums a where a.user_id='" + ouser_id + "'"
+    albums = excuteQuery(sql2)
+    addf=1
+    return render_template('userProfile.html', ouser=ouser, user_id=user_id, albums=albums, addf=addf)
 
 @app.route('/addComment/', methods=['POST', 'GET'])
 def addComment():
@@ -219,9 +312,13 @@ def addComment():
                                    img_path=info_dict['img_path'],
                                    comments=info_dict['all_comments'],
                                    likes=info_dict['likes'])
-        else: #TODO, user cannot leave comment on his own photo
-            #do something
-            print('not allowed to comment on your own photo')
+        else:
+            message = 'not allowed to comment on your own photo'
+            info_dict = getPhotoRequire(photo_id)
+            return render_template('photo.html', photo_id=photo_id,
+                                   img_path=info_dict['img_path'],
+                                   comments=info_dict['all_comments'],
+                                   likes=info_dict['likes'], comment_message=message)
 
 @app.route('/addLike/', methods=['POST', 'GET'])
 def addLike():
@@ -229,11 +326,14 @@ def addLike():
         print('enter addLike post')
         if 'user_id' in session:
             user_id = session['user_id']
+        print('in addlike ur id = '+str(user_id))
         req_form = request.form
         photo_id = req_form['photo_id']
         sql = 'select user_id from likes where photo_id={0}'.format(photo_id)
         print(sql)
-        like_users = excuteQuery(sql)[0][0]
+        like_users = excuteQuery(sql)
+        like_users = [x[0] for x in like_users]
+        print('user like this photo:',like_users)
         sql = 'select album_id from photos where photo_id={0}'.format(photo_id)
         album_id = excuteQuery(sql)[0][0]
         sql = 'select user_id from albums where album_id={0}'.format(album_id)
@@ -241,7 +341,7 @@ def addLike():
         if user_id in like_users:
             message = 'You already liked this photo'
         elif user_id == owner_id:
-            message = 'Owner cannot likes their own photo'
+            message = 'You cannot like your own photo'
         else:
             sql = 'insert into likes(user_id,photo_id) values (' \
                   '\'{0}\',\'{1}\');'.format(user_id, photo_id)
@@ -253,7 +353,87 @@ def addLike():
         return render_template('photo.html', photo_id=photo_id,
                                img_path=info_dict['img_path'],
                                comments=info_dict['all_comments'],
-                               likes=info_dict['likes'], message=message)
+                               likes=info_dict['likes'], like_message=message)
+
+
+@app.route('/search',methods=['POST','GET'])
+def search():
+    if request.method=='POST':
+        if 'user_id' in session:
+            user_id=session['user_id']
+        searchForm=request.form
+        searchType=searchForm['searchType']
+        searchContent=searchForm['searchContent']
+
+        if searchType=='users':
+            ouser_id=searchContent
+            sql1 = "select * from users u where u.user_id='" + ouser_id + "'"
+            ouser = excuteQuery(sql1)
+            sql2 = "select * from albums a where a.user_id='" + ouser_id + "'"
+            albums = excuteQuery(sql2)
+            sql3 = "select * from friends f where (f.user_id1= '%s' and f.user_id2= '%s') or (f.user_id1= '%s' and f.user_id2= '%s')" % (
+            user_id, ouser_id, ouser_id, user_id)
+            print(sql3)
+            addf = excuteQuery(sql3)
+            return render_template('userProfile.html', ouser=ouser, user_id=user_id, albums=albums, addf=addf)
+        if searchType=='tags':
+            tags=searchContent
+            tag=[]
+            tag=tags.split(' ')
+            sql=['' for i in range(len(tag))]
+            if tag[0]:
+                sql[0] = "(select a.photo_id from associate a where a.tag='%s')" % (tag[0])
+            print(sql[0])
+            fsql = sql[0]
+            for i in range(1, len(tag)):
+                if tag[i]:
+                    sql[i] = "(select a.photo_id from associate a where a.tag='%s' and photo_id in %s )" % (tag[i], sql[i - 1])
+                else:
+                    sql[i] = sql[i - 1]
+                fsql = sql[i]
+                #print(fsql)
+            print(fsql)
+            photo_ids=excuteQuery(fsql)
+            return render_template('tagsSearchResult.html', photo_ids=photo_ids)
+        if searchType=='comments':
+            comments = searchContent
+            print(comments)
+            sql = 'select c.user_id, count(c.user_id) ' \
+                  'from comments c ' \
+                  'where c.content=\'{0}\' ' \
+                  'group by c.user_id ' \
+                  'order by count(c.user_id) DESC;'.format(comments)
+            print(sql)
+            match = excuteQuery(sql)
+            print(match)
+            return render_template('commentsSearchResult.html', match=match)
+
+@app.route('/myPhotoSearch/',methods=['POST','GET'])
+def myPhotoSearch():
+    if request.method=='POST':
+        if 'user_id' in session:
+            user_id=session['user_id']
+        mySearchForm=request.form
+        tags=mySearchForm['tags']
+        tag = []
+        tag = tags.split(' ')
+        sql = ['' for i in range(len(tag))]
+        if tag[0]:
+            sql[0] = "(select a.photo_id FROM albums aa,photos p,associate a WHERE aa.album_id=p.album_id and p.photo_id=a.photo_id and aa.user_id='%s' and a.tag='%s')" % (user_id,tag[0])
+        print(sql[0])
+        fsql = sql[0]
+        for i in range(1, len(tag)):
+            if tag[i]:
+                sql[i] = "(select a.photo_id from associate a where a.tag='%s' and photo_id in %s )" % (
+                tag[i], sql[i - 1])
+            else:
+                sql[i] = sql[i - 1]
+            fsql = sql[i]
+            # print(fsql)
+        print(fsql)
+        photo_ids = excuteQuery(fsql)
+        return render_template('myPhoto.html', photo_ids=photo_ids)
+
 
 
 def getFriendList(user_id):

@@ -12,6 +12,13 @@
     <a href="login">sign in</a>
     <a href="signup">sign up</a>
 {% endif %}
-<img src="/static/img/imm.PNG">
+<a href="/userProfile?ouser_id=12">user:12</a>
+<form action="/search" method="post">
+    <input type="radio" name="searchType" value="users" checked="checked" />user search(by user_id)
+    <input type="radio" name="searchType" value="comments">comment search
+    <input type="radio" name="searchType" value="tags">photo search(by tags)
+    <input type="text" name="searchContent">
+    <input type="submit">
+</form>
 </body>
 </html>
