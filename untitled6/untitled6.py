@@ -139,6 +139,8 @@ def album():
     print(album_id)
     if 'user_id' in session:
         user_id = session['user_id']
+    else:
+        user_id = ''
     sql2 = "select * from albums a where a.album_id= %s" % (album_id)
     album = excuteQuery(sql2)
     sql3 = "select * from photos p where p.album_id= %s" % (album_id)
@@ -299,6 +301,8 @@ def addComment():
         print('enter addComment post')
         if 'user_id' in session:
             user_id = session['user_id']
+        else:
+            user_id = ''
         req_form = request.form
         photo_id = req_form['photo_id']
         sql = 'select album_id from photos where photo_id={0}'.format(photo_id)
@@ -311,6 +315,7 @@ def addComment():
             sql = 'insert into comments(content,date_of_comment,user_id,photo_id) ' \
                   'values (\'{0}\',\'{1}\',\'{2}\',\'{3}\');'.format(content, date_of_comment, user_id,
                    photo_id)
+            print(sql)
             excuteQuery(sql)
             info_dict = getPhotoRequire(photo_id)
             # return render_template('tmp.html', toprint='called to photo')
@@ -367,6 +372,8 @@ def search():
     if request.method=='POST':
         if 'user_id' in session:
             user_id=session['user_id']
+        else:
+            user_id =''
         searchForm=request.form
         searchType=searchForm['searchType']
         searchContent=searchForm['searchContent']

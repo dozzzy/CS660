@@ -33,8 +33,12 @@ ALL COMMENTS BELOW <br/>
 {% if comments %}
     {% for row in comments %}
         <ul>
-        {{ row[0] }} says : {{ row[1] }}
+        {%  if row[0] %}
+            {{ row[0] }} says : {{ row[1] }}
+        {% else %}
+            nobody says:{{ row[1] }}
         </ul>
+        {% endif %}
     {% endfor %}
 {% endif %}
 
