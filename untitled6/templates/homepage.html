@@ -19,6 +19,12 @@
     {{ top5tag }}
 {% endif %}
 
+<br/>below print top10(or less) contribution users :<br/>
+{% if top10User %}
+    {{ top10User }}
+{% endif %}
+
+
 <form action="/search" method="post">
     <input type="radio" name="searchType" value="users" checked="checked" />user search(by user_id)
     <input type="radio" name="searchType" value="comments">comment search

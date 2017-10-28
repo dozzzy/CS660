@@ -27,8 +27,8 @@ def excuteQuery(sql):
 def homepage():
     print(os.path.abspath('.'))
     tag_n_count = findTop5Tags()
-    return render_template('homepage.html', top5tag=tag_n_count[:5])
-
+    user_n_contri = findTop10Contributor()
+    return render_template('homepage.html', top5tag=tag_n_count[:5], top10User=user_n_contri[:10])
 
 @app.route('/login/', methods=['POST', 'GET'])
 def login():
@@ -43,7 +43,8 @@ def login():
         if user:
             session['user_id'] = username
             tag_n_count = findTop5Tags()
-            return render_template('homepage.html', user=user, top5tag=tag_n_count[:5])
+            user_n_contri = findTop10Contributor()
+            return render_template('homepage.html', user=user, top5tag=tag_n_count[:5],  top10User=user_n_contri[:10])
         else:
             return render_template('error.html', error=1)
     else:  # If a get request is detected
@@ -553,6 +554,42 @@ def findTop5Tags():
     print(sql)
     tag_n_count = excuteQuery(sql)
     return tag_n_count
+
+def findTop10Contributor():
+    # first contribution # of comments of every user
+    sql = 'select u.user_id, count(*) ' \
+          'from users u, comments c ' \
+          'where u.user_id = c.user_id ' \
+          'group by u.user_id ';
+    comm_contri = excuteQuery(sql)
+    sql = 'select u.user_id, count(*) ' \
+          'from albums a, users u, photos p ' \
+          'where a.user_id = u.user_id and ' \
+          ' p.album_id = a.album_id ' \
+          'group by u.user_id'
+    upload_contri = excuteQuery(sql)
+
+    # build necessary vars.
+    all_user_with_contri = {x[0] for x in comm_contri}
+    all_user_with_contri.union({x[0] for x in upload_contri})
+    user_n_contri = []
+    for user in all_user_with_contri:
+        user_n_contri.append([user,0])
+
+    # add contribution together
+    for x in comm_contri:
+        for y in user_n_contri:
+            if y[0] == x[0]:
+                y[1] = y[1]+x[1]
+                continue
+    for x in upload_contri:
+        for y in user_n_contri:
+            if y[0] == x[0]:
+                y[1] = y[1] + x[1]
+                continue
+    user_n_contri = sorted(user_n_contri, key=lambda x:x[1], reverse=True)
+    print(user_n_contri)
+    return user_n_contri
 
 
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
