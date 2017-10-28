@@ -570,8 +570,9 @@ def findTop10Contributor():
     upload_contri = excuteQuery(sql)
 
     # build necessary vars.
-    all_user_with_contri = {x[0] for x in comm_contri}
-    all_user_with_contri.union({x[0] for x in upload_contri})
+    user_with_comm = {x[0] for x in comm_contri}
+    user_with_photo = {x[0] for x in upload_contri}
+    all_user_with_contri = user_with_comm | user_with_photo
     user_n_contri = []
     for user in all_user_with_contri:
         user_n_contri.append([user,0])
