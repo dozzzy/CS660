@@ -478,6 +478,7 @@ def youMayLike(user_id):
     target_tags = tag_n_count[0:min(len(tag_n_count),5)] # tags might less than 5
 
     # query candidate photos with at least 1 most used tags
+    # query candidate photos
     where_condition = str()
     for tag in target_tags:
         where_condition += ' or a.tag=\'{0}\''.format(tag[0])
