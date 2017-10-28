@@ -7,7 +7,7 @@ import os
 import json
 
 app = Flask(__name__)
-db = mysql.connector.connect(user='root', host='127.0.0.1', password='jerry791201', database='new_proj1')
+db = mysql.connector.connect(user='root', host='127.0.0.1', password='1111', database='pa1')
 
 
 def excuteQuery(sql):
@@ -29,7 +29,12 @@ def homepage():
     tag_n_count = findTop5Tags()
     user_n_contri = findTop10Contributor()
     return render_template('homepage.html', top5tag=tag_n_count[:5], top10User=user_n_contri[:10])
-
+@app.route('/login/', methods=['POST', 'GET'])
+def logout():
+    session.clear()
+    tag_n_count = findTop5Tags()
+    user_n_contri = findTop10Contributor()
+    return render_template('homepage.html', top5tag=tag_n_count[:5], top10User=user_n_contri[:10])
 @app.route('/login/', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':  # If a post request is detected
