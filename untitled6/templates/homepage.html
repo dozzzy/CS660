@@ -13,6 +13,12 @@
     <a href="signup">sign up</a>
 {% endif %}
 <a href="/userProfile?ouser_id=12">user:12</a>
+
+<br/>below print top5(or less) popular tags:<br/>
+{% if top5tag %}
+    {{ top5tag }}
+{% endif %}
+
 <form action="/search" method="post">
     <input type="radio" name="searchType" value="users" checked="checked" />user search(by user_id)
     <input type="radio" name="searchType" value="comments">comment search

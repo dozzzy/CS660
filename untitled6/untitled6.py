@@ -26,7 +26,8 @@ def excuteQuery(sql):
 @app.route('/')
 def homepage():
     print(os.path.abspath('.'))
-    return render_template('homepage.html')
+    tag_n_count = findTop5Tags()
+    return render_template('homepage.html', top5tag=tag_n_count[:5])
 
 
 @app.route('/login/', methods=['POST', 'GET'])
@@ -41,7 +42,8 @@ def login():
         user = excuteQuery(sql)
         if user:
             session['user_id'] = username
-            return render_template('homepage.html', user=user)
+            tag_n_count = findTop5Tags()
+            return render_template('homepage.html', user=user, top5tag=tag_n_count[:5])
         else:
             return render_template('error.html', error=1)
     else:  # If a get request is detected
@@ -542,6 +544,15 @@ def tagMatch(candidate_photo_id, target_tags):
         mismatch_cnt = -mismatch_cnt
         tagMatchResult.append((photo_id,match_cnt,mismatch_cnt))
     return tagMatchResult
+
+def findTop5Tags():
+    sql =  'select a.tag, count(*)' \
+           'from associate a ' \
+           'group by a.tag ' \
+           'order by count(*) desc;'
+    print(sql)
+    tag_n_count = excuteQuery(sql)
+    return tag_n_count
 
 
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
