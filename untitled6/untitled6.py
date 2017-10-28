@@ -29,7 +29,7 @@ def homepage():
     tag_n_count = findTop5Tags()
     user_n_contri = findTop10Contributor()
     return render_template('homepage.html', top5tag=tag_n_count[:5], top10User=user_n_contri[:10])
-@app.route('/login/', methods=['POST', 'GET'])
+@app.route('/logout/', methods=['POST', 'GET'])
 def logout():
     session.clear()
     tag_n_count = findTop5Tags()

@@ -31,15 +31,15 @@ There are total {{ likes|length }} likes <br/>
 
 ALL COMMENTS BELOW <br/>
 {% if comments %}
+    <ul>
     {% for row in comments %}
-        <ul>
         {%  if row[0] %}
-            {{ row[0] }} says : {{ row[1] }}
+            {{ row[0] }} says : {{ row[1] }} <br/>
         {% else %}
-            nobody says:{{ row[1] }}
-        </ul>
+            nobody says:{{ row[1] }}<br/>
         {% endif %}
     {% endfor %}
+    </ul>
 {% endif %}
 
 leave a comment: <br/>
