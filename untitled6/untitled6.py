@@ -42,11 +42,11 @@ def login():
         print(loginForm)
         username = loginForm['userid']
         pwd = loginForm['pwd']
-        sql = "select * from users u where u.user_id='" + username + "' and password='" + pwd + "'"
+        sql = "select * from users u where u.email='" + username + "' and password='" + pwd + "'"
         print(sql)
         user = excuteQuery(sql)
         if user:
-            session['user_id'] = username
+            session['user_id'] = user[0][0]
             tag_n_count = findTop5Tags()
             user_n_contri = findTop10Contributor()
             return render_template('homepage.html', user=user, top5tag=tag_n_count[:5],  top10User=user_n_contri[:10])
