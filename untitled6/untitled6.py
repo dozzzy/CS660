@@ -102,8 +102,9 @@ def personal():
         rfriends = excuteQuery(sqlrf)
 
         #recommend photos
+        print('recommend photos')
         rphotos = youMayLike(user_id)
-
+        print('end rphoto')
         return render_template('personal.html', user=user, friends=friends, albums=albums,
                                rfriends=rfriends, rphotos=rphotos)
 
@@ -473,22 +474,26 @@ def recommendFriends(user_id):
 
 
 def youMayLike(user_id):
+    print('endter youMaylike')
     #used_id is the login user
     tag_n_count, all_my_photos = getMyMostUsedTags(user_id) #format:(tag, count)
     target_tags = tag_n_count[0:min(len(tag_n_count),5)] # tags might less than 5
 
-    # query candidate photos with at least 1 most used tags
-    where_condition = str()
-    for tag in target_tags:
-        where_condition += ' or a.tag=\'{0}\''.format(tag[0])
-    where_condition = where_condition[4:]
-    sql = 'select distinct a.photo_id ' \
-          'from associate a ' \
-          'where {0} '.format(where_condition)
-    candidate_photos = excuteQuery(sql)
-
-    # remove those photos of mine (no need to recommend your own photos)
-    candidate_photos = [x[0] for x in candidate_photos if x[0] not in all_my_photos]
+    if tag_n_count:
+        # query candidate photos with at least 1 most used tags
+        where_condition = str()
+        for tag in target_tags:
+            where_condition += ' or a.tag=\'{0}\''.format(tag[0])
+        where_condition = where_condition[4:]
+        sql = 'select distinct a.photo_id ' \
+              'from associate a ' \
+              'where {0} '.format(where_condition)
+        print('sql for candidate photo '),print(sql)
+        candidate_photos = excuteQuery(sql)
+        # remove those photos of mine (no need to recommend your own photos)
+        candidate_photos = [x[0] for x in candidate_photos if x[0] not in all_my_photos]
+    else:
+        candidate_photos = []
 
     # sorted_tagMatch format:{photo_id, # of matched tag, -(# of unmatched )}
     if not candidate_photos:
@@ -497,6 +502,7 @@ def youMayLike(user_id):
     else:
         tagMatchResult = tagMatch(candidate_photos, target_tags)
         sorted_tagMatch = sorted(tagMatchResult, key=lambda y: (y[1],y[2]), reverse=True)
+    print('sorted_tagMatch {0}'.format(sorted_tagMatch))
     return sorted_tagMatch
 
 def getMyMostUsedTags(user_id):
@@ -506,6 +512,7 @@ def getMyMostUsedTags(user_id):
           'where a.user_id = {0} and a.album_id = p.album_id'.format(user_id)
     print(sql)
     all_my_photos = excuteQuery(sql)
+    print('all_my_photos'), print(all_my_photos)
     # generate where condition to find all my tags and # of usages
     where_condition = str()
     if not all_my_photos:
