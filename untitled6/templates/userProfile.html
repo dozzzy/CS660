@@ -40,7 +40,9 @@
     <ul class="docs-nav" id="menu-left">
       <li><strong>add Friends</strong></li>
  {% if user_id %}
-     {% if addf %}
+ {% if user_id==ouser[0][0] %}
+     <li>this is you</li>
+ {% elif addf %}
  <li>
      you are already friends
  </li>
