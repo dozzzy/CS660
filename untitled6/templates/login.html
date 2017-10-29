@@ -1,16 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
+
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>login</title>
+<meta charset="utf-8">
+<meta name="description" content="">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Opineo, Feedback Collection and Polling Widget - Documentation</title>
+<link rel="alternate" type="application/rss+xml" title="egrappler.com" href="feed/index.html">
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='prettify.css')}}">
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='style.css')}}">
 </head>
-<body>
+<body >
+<nav>
+  <div class="container">
+    <h1>PA1</h1>
+    <div id="menu">
+      <ul class="toplinks">
+              <li><a href="signup">sign up</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header>
+  <div class="container">
+    <h2 class="docs-header"> Login Page</h2>
+  </div>
+</header>
+<section>
+  <div class="container">
+    <div class="docs-content" style="padding-left:300px">
+      <h3> Login</h3>
+        <ul>
 <form action="/login/" method="post">
-    <h1>userid</h1>
-    <input type="text" name="userid"/>
-    <h1>password</h1>
-    <input type="password" name="pwd"/>
-    <input type="submit" name="submit">
+    <li>userid</li>
+    <li><input type="text" name="userid"/></li>
+    <li>password</li>
+    <li><input type="password" name="pwd"/></li>
+    <input type="submit" value="login">
 </form>
+        </ul>
+      <hr>
+    </div>
+  </div>
+</section>
+<section class="vibrant centered">
+  <div class="container">
+    <h4> CS660 Project Assignment1</h4>
+  </div>
+</section>
+<footer>
+  <div class="container">
+    <p> yueh ying lee U41222261 And Zhong tu U89072077</p>
+  </div>
+</footer>
+
+
 </body>
 </html>

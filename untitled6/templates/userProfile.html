@@ -1,24 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
+
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+<meta charset="utf-8">
+<meta name="description" content="">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Opineo, Feedback Collection and Polling Widget - Documentation</title>
+<link rel="alternate" type="application/rss+xml" title="egrappler.com" href="feed/index.html">
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='prettify.css')}}">
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='style.css')}}">
 </head>
-<body>
- {% if ouser %}
-    <ul>
-	    {% for row in ouser %}
-	    <li>
-		    {{row}}
-	    </li>
-	    {% endfor %}
-    </ul>
- {% endif %}
+<body >
+<nav>
+  <div class="container">
+    <h1>PA1</h1>
+    <div id="menu">
+      <ul class="toplinks">
+          {% if user_id %}
+                <li>hello,{{ user_id }} </li>
+                <li><a href="personal">person center</a></li>
+                <li><a href="/logout">logout</a></li>
+
+          {% else %}
+              <li><a href="login">sign in</a></li>
+              <li><a href="signup">sign up</a></li>
+          {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+<header>
+  <div class="container">
+    <h2 class="docs-header"> Person Center</h2>
+  </div>
+</header>
+<section>
+  <div class="container">
+    <ul class="docs-nav" id="menu-left">
+      <li><strong>add Friends</strong></li>
  {% if user_id %}
      {% if addf %}
  <li>
      you are already friends
-
  </li>
 {% else %}
 <li>
@@ -30,14 +54,59 @@
     you can add friend after log in
 </li>
  {% endif %}
- {% if albums %}
+    </ul>
+    <ul class="docs-content">
+      <h3 id="welcome"> user info</h3>
+
     <ul>
+
+    <li>firstname:{{ ouser[0][1] }}</li>
+
+    <li>lastname:{{ ouser[0][2] }}</li>
+    <li>email:{{ ouser[0][3] }}</li>
+    <li>birth:{{ ouser[0][4] }}</li>
+    <li>hometown:{{ ouser[0][5] }}</li>
+    <li>gender:{% if ouser[0][6] == 1 %}
+    male
+    {% else %}
+    female
+    {% endif %}
+    </li>
+
+    </ul>
+      <h3 id="welcome"> albums</h3>
+
+      <ul>
 	    {% for row in albums %}
 	    <li>
             <a href="/album?album_id={{ row[0] }}" >  {{row}}</a>
 	    </li>
         {% endfor %}
-    </ul>
- {% endif %}
+
+      </ul>
+        <h3 id="search"> search photo</h3>
+        <ur>
+        <form action="/myPhotoSearch" method="post">
+               <input type="hidden" value="{{ ouser[0][0] }}" name="ouser_id">
+               <li><input type="text" name="tags"></li>
+               <li><input type="submit" value="search"></li>
+         </form>
+        </ur>
+            <hr>
+    </div>
+  </div>
+</section>
+<section class="vibrant centered">
+  <div class="container">
+    <h4> CS660 Project Assignment1</h4>
+  </div>
+</section>
+<footer>
+  <div class="container">
+    <p> yueh ying lee U41222261 And Zhong tu U89072077</p>
+  </div>
+</footer>
+
+
 </body>
 </html>

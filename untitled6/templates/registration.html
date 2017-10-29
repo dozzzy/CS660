@@ -1,28 +1,70 @@
-<!DOCTYPE html>
-<html lang="en">
+
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>sign up</title>
+<meta charset="utf-8">
+<meta name="description" content="">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Opineo, Feedback Collection and Polling Widget - Documentation</title>
+<link rel="alternate" type="application/rss+xml" title="egrappler.com" href="feed/index.html">
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='prettify.css')}}">
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='style.css')}}">
 </head>
-<body>
+<body >
+<nav>
+  <div class="container">
+    <h1>PA1</h1>
+    <div id="menu">
+      <ul class="toplinks">
+              <li><a href="login">sign in</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<header>
+  <div class="container">
+    <h2 class="docs-header"> registration page</h2>
+  </div>
+</header>
+<section>
+  <div class="container">
+    <div class="docs-content" style="padding-left:300px">
+      <h3> Sign up</h3>
+        <ul>
 <form action="/signup/" method="post">
-    <lable>userid</lable>
-    <input type="text" name="userid">
-    <lable>password</lable>
+    <li>password</li>
     <input type="password" name="pwd">
-    <lable>firstname</lable>
+    <li>firstname</li>
     <input type="text" name="firstname">
-    <lable>lastname</lable>
+    <li>lastname</li>
     <input type="text" name="lastname">
-    <lable>email</lable>
+    <li>email</li>
     <input type="text" name="email">
-    <lable>birth</lable>
+    <li>birth</li>
     <input type="date" name="birth">
-    <lable>hometown</lable>
+    <li>hometown</li>
     <input type="text" name="hometown">
-    <lable>gender</lable>
-    <input type="radio" name="gender" value="1">male <input type="radio" name="gender" value="2">female
-    <input type="submit">
+    <li>gender</li>
+    <input type="radio" name="gender" value="1" checked style="width: 10px">male <input type="radio" name="gender" value="2" style="width: 10px">female
+    <li><input type="submit" value="sign up"></li>
 </form>
+        </ul>
+      <hr>
+    </div>
+  </div>
+</section>
+<section class="vibrant centered">
+  <div class="container">
+    <h4> CS660 Project Assignment1</h4>
+  </div>
+</section>
+<footer>
+  <div class="container">
+    <p> yueh ying lee U41222261 And Zhong tu U89072077</p>
+  </div>
+</footer>
+
+
 </body>
 </html>
