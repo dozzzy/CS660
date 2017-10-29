@@ -37,6 +37,8 @@ def logout():
     return render_template('homepage.html', top5tag=tag_n_count[:5], top10User=user_n_contri[:10])
 @app.route('/logout/login/', methods=['POST', 'GET'])
 @app.route('/login/', methods=['POST', 'GET'])
+@app.route('/album/login', methods=['POST', 'GET'])
+@app.route('/photo/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':  # If a post request is detected
         loginForm = request.form  # Get form from request
@@ -55,8 +57,9 @@ def login():
             return render_template('error.html', error=1)
     else:  # If a get request is detected
         return render_template('login.html')
-
-
+@app.route('/photo/signup', methods=['POST', 'GET'])
+@app.route('/album/signup', methods=['POST', 'GET'])
+@app.route('/logout/signup', methods=['POST', 'GET'])
 @app.route('/signup/', methods=['POST', 'GET'])
 def signup():
     if request.method == 'POST':
@@ -82,11 +85,15 @@ def signup():
             user = excuteQuery(sql2)
             session['user_id']=user[0][0]
             print(user)
-            return render_template('homepage.html', user=user)
+            tag_n_count = findTop5Tags()
+            user_n_contri = findTop10Contributor()
+            return render_template('homepage.html', user=user, top5tag=tag_n_count[:5],  top10User=user_n_contri[:10])
     else:
         return render_template('registration.html')
 
 @app.route('/personal', methods=['POST', 'GET'])
+@app.route('/photo/personal', methods=['POST', 'GET'])
+@app.route('/album/personal', methods=['POST', 'GET'])
 @app.route('/login/personal/', methods=['POST', 'GET'])
 def personal():
     print("personal")
@@ -271,16 +278,18 @@ def photo():
         else:
             user_id=0
         photo_id = request.args.get('photo_id')
+        sql="select a.tag from associate a where a.photo_id=%s" % (photo_id)
+        tags=excuteQuery(sql)
         info_dict = getPhotoRequire(photo_id)
         #return render_template('tmp.html', toprint='called to photo')
         return render_template('photo.html', photo_id=photo_id,
                                 img_path=info_dict['img_path'],
                                comments=info_dict['all_comments'],
                                 likes=info_dict['likes'],
-                               user_id=user_id)
+                               user_id=user_id,tags=tags)
 
 def getPhotoRequire(photo_id):
-    sql = 'select user_id, content from comments where photo_id = {0}'.format(photo_id)
+    sql = 'select user_id, content, date_of_comment from comments where photo_id = {0}'.format(photo_id)
     all_comments = excuteQuery(sql)
     #for que in all_comments:
     #    print(que[0], ' says: ', que[1])
@@ -318,11 +327,17 @@ def addComment():
             user_id = 0
         req_form = request.form
         photo_id = req_form['photo_id']
+        print(photo_id)
         sql = 'select album_id from photos where photo_id={0}'.format(photo_id)
         album_id = excuteQuery(sql)[0][0]
         sql = 'select user_id from albums where album_id={0}'.format(album_id)
         owner_id = excuteQuery(sql)[0][0]
+        sql1 = "select a.tag from associate a where a.photo_id=%s" % (photo_id)
+        tags = excuteQuery(sql1)
+        print(owner_id)
+        print(user_id)
         if owner_id != user_id:
+            print('start insert comment')
             content = req_form['content']
             date_of_comment = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             sql = 'insert into comments(content,date_of_comment,user_id,photo_id) ' \
@@ -331,18 +346,19 @@ def addComment():
             print(sql)
             excuteQuery(sql)
             info_dict = getPhotoRequire(photo_id)
+
             # return render_template('tmp.html', toprint='called to photo')
             return render_template('photo.html', photo_id=photo_id,
                                    img_path=info_dict['img_path'],
                                    comments=info_dict['all_comments'],
-                                   likes=info_dict['likes'])
+                                   likes=info_dict['likes'],tags=tags,user_id=user_id)
         else:
             message = 'not allowed to comment on your own photo'
             info_dict = getPhotoRequire(photo_id)
             return render_template('photo.html', photo_id=photo_id,
                                    img_path=info_dict['img_path'],
                                    comments=info_dict['all_comments'],
-                                   likes=info_dict['likes'], comment_message=message)
+                                   likes=info_dict['likes'], comment_message=message,tags=tags,user_id=user_id)
 
 @app.route('/addLike', methods=['POST', 'GET'])
 def addLike():
@@ -439,10 +455,14 @@ def search():
 @app.route('/tagSearch',methods=['POST','GET'])
 def tagSearch():
     if request.method=='GET':
+        if 'user_id' in session:
+            user_id=session['user_id']
+        else:
+            user_id =0
         tag = request.args.get('tag')
         sql = "(select a.photo_id from associate a where a.tag='%s')" % (tag)
         photo_ids = excuteQuery(sql)
-        return render_template('tagsSearchResult.html', photo_ids=photo_ids)
+        return render_template('tagsSearchResult.html', photo_ids=photo_ids,tags=tag,user_id=user_id)
 
 @app.route('/myPhotoSearch',methods=['POST','GET'])
 def myPhotoSearch():

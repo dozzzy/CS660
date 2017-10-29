@@ -65,21 +65,34 @@
     <p style="color:#FF0000";>{{ like_message }}</p>
 {% endif %}
         </ul>
+        <h3 id="tags"> tags</h3>
+
+        <ul>
+            {% if tags %}
+            {% for row in tags %}
+                <a href="/tagSearch?tag={{ row[0] }}" class=" ">{{ row[0] }} </a>
+            {% endfor %}
+            {% endif %}
+        </ul>
         <h3 id="comments">comments</h3>
         {% if comments %}
     <ul>
     {% for row in comments %}
         {%  if row[0] %}
             <a href="/userProfile?ouser_id={{ row[0] }}" class=" ">{{ row[0] }}</a> says : {{ row[1] }} <br/>
+            <li>at {{ row[2] }}</li>
         {% else %}
             nobody says:{{ row[1] }}<br/>
+            <li>at {{ row[2] }}</li>
         {% endif %}
 
     {% endfor %}
     </ul>
     {% endif %}
             <h3 id="add comments">leave a comment</h3>
-
+{% if comment_message %}
+    <p style="color:#FF0000";>{{ comment_message }}</p>
+{% endif %}
 <form action="/addComment" method="post">
      <input type="hidden" name="photo_id" readonly="readonly" value={{ photo_id }}>
     <input type="text" name="content">
