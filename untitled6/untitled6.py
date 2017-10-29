@@ -35,6 +35,7 @@ def logout():
     tag_n_count = findTop5Tags()
     user_n_contri = findTop10Contributor()
     return render_template('homepage.html', top5tag=tag_n_count[:5], top10User=user_n_contri[:10])
+@app.route('/logout/login/', methods=['POST', 'GET'])
 @app.route('/login/', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':  # If a post request is detected
@@ -265,13 +266,18 @@ def deletePhoto():
 @app.route('/photo/', methods=['POST', 'GET'])
 def photo():
     if request.method == "GET":
+        if 'user_id' in session:
+            user_id=session['user_id']
+        else:
+            user_id=0
         photo_id = request.args.get('photo_id')
         info_dict = getPhotoRequire(photo_id)
         #return render_template('tmp.html', toprint='called to photo')
         return render_template('photo.html', photo_id=photo_id,
                                 img_path=info_dict['img_path'],
                                comments=info_dict['all_comments'],
-                                likes=info_dict['likes'])
+                                likes=info_dict['likes'],
+                               user_id=user_id)
 
 def getPhotoRequire(photo_id):
     sql = 'select user_id, content from comments where photo_id = {0}'.format(photo_id)
@@ -443,6 +449,8 @@ def myPhotoSearch():
     if request.method=='POST':
         if 'user_id' in session:
             user_id=session['user_id']
+        else:
+            user_id=0
         mySearchForm=request.form
         tags=mySearchForm['tags']
         ouser_id=mySearchForm['ouser_id']

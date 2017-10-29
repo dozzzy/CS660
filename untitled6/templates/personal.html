@@ -17,8 +17,8 @@
     <h1>PA1</h1>
     <div id="menu">
       <ul class="toplinks">
-          {% if user_id %}
-                <li>hello,{{ user_id }} </li>
+          {% if user %}
+                <li>hello,{{ user[0][0] }} </li>
                 <li><a href="personal">person center</a></li>
                 <li><a href="/logout">logout</a></li>
 
