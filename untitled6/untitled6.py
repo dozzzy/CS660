@@ -54,12 +54,13 @@ def login():
             user_n_contri = findTop10Contributor()
             return render_template('homepage.html', user=user, top5tag=tag_n_count[:5],  top10User=user_n_contri[:10])
         else:
-            return render_template('error.html', error=1)
+            return render_template('login.html', error=1)
     else:  # If a get request is detected
         return render_template('login.html')
 @app.route('/photo/signup', methods=['POST', 'GET'])
 @app.route('/album/signup', methods=['POST', 'GET'])
 @app.route('/logout/signup', methods=['POST', 'GET'])
+@app.route('/login/signup', methods=['POST', 'GET'])
 @app.route('/signup/', methods=['POST', 'GET'])
 def signup():
     if request.method == 'POST':
@@ -78,7 +79,7 @@ def signup():
         sql1 = "select * from users u where u.email='%s'" % (email)
         user = excuteQuery(sql1)
         if user:
-            return render_template('error.html', error=2)
+            return render_template('registration.html', error=2)
         else:
             excuteQuery(sql)
             sql2 = "select * from users u where u.email= '%s'" % (email)

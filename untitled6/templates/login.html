@@ -31,6 +31,9 @@
   <div class="container">
     <div class="docs-content" style="padding-left:300px">
       <h3> Login</h3>
+        {% if error %}
+    <p style="color:#FF0000";>password error</p>
+{% endif %}
         <ul>
 <form action="/login/" method="post">
     <li>userid</li>

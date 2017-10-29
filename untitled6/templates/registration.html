@@ -31,6 +31,9 @@
   <div class="container">
     <div class="docs-content" style="padding-left:300px">
       <h3> Sign up</h3>
+                {% if error %}
+    <p style="color:#FF0000";>you have already create a accountk by this email</p>
+{% endif %}
         <ul>
 <form action="/signup/" method="post">
     <li>password</li>
