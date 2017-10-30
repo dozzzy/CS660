@@ -28,7 +28,14 @@ def homepage():
     print(os.path.abspath('.'))
     tag_n_count = findTop5Tags()
     user_n_contri = findTop10Contributor()
-    return render_template('homepage.html', top5tag=tag_n_count[:5], top10User=user_n_contri[:10])
+    if 'user_id' in session:
+        user_id=session['user_id']
+    else:
+        user_id=0
+    sql="select * from users u where u.user_id=%d " % (user_id)
+    user=excuteQuery(sql)
+    return render_template('homepage.html', top5tag=tag_n_count[:5], top10User=user_n_contri[:10],user=user)
+
 @app.route('/logout/', methods=['POST', 'GET'])
 def logout():
     session.clear()
@@ -96,6 +103,7 @@ def signup():
 @app.route('/photo/personal', methods=['POST', 'GET'])
 @app.route('/album/personal', methods=['POST', 'GET'])
 @app.route('/login/personal/', methods=['POST', 'GET'])
+@app.route('/signup/personal/', methods=['POST', 'GET'])
 def personal():
     print("personal")
     if request.method == 'GET':  # If a post request is detected
@@ -341,6 +349,8 @@ def addComment():
             print('start insert comment')
             content = req_form['content']
             date_of_comment = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            if user_id==0:
+                user_id=''
             sql = 'insert into comments(content,date_of_comment,user_id,photo_id) ' \
                   'values (\'{0}\',\'{1}\',\'{2}\',\'{3}\');'.format(content, date_of_comment, user_id,
                    photo_id)
@@ -381,6 +391,8 @@ def addLike():
         album_id = excuteQuery(sql)[0][0]
         sql = 'select user_id from albums where album_id={0}'.format(album_id)
         owner_id = excuteQuery(sql)[0][0]
+        sql1 = "select a.tag from associate a where a.photo_id=%s" % (photo_id)
+        tags = excuteQuery(sql1)
         if user_id in like_users:
             message = 'You already liked this photo'
         elif user_id == owner_id:
@@ -396,7 +408,7 @@ def addLike():
         return render_template('photo.html', photo_id=photo_id,
                                img_path=info_dict['img_path'],
                                comments=info_dict['all_comments'],
-                               likes=info_dict['likes'], like_message=message)
+                               likes=info_dict['likes'], like_message=message,tags=tags,user_id=user_id)
 
 
 @app.route('/search',methods=['POST','GET'])

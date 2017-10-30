@@ -6,7 +6,7 @@
 <meta name="HandheldFriendly" content="True">
 <meta name="MobileOptimized" content="320">
 <meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Opineo, Feedback Collection and Polling Widget - Documentation</title>
+<title>photo</title>
 <link rel="alternate" type="application/rss+xml" title="egrappler.com" href="feed/index.html">
 <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='prettify.css')}}">
 <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='style.css')}}">
@@ -14,11 +14,11 @@
 <body >
 <nav>
   <div class="container">
-    <h1>PA1</h1>
+    <h1><a href="/">PA1</a></h1>
     <div id="menu">
       <ul class="toplinks">
           {% if user_id %}
-                <li>hello,{{ user_id }} </li>
+                <li style="color: white;padding: 14px;">hello,{{ user_id }} </li>
                 <li><a href="personal">person center</a></li>
                 <li><a href="/logout">logout</a></li>
 
@@ -55,12 +55,13 @@
 
                 photo ID: {{ photo_id }} <br/>
                 <img src="{{ img_path }}"/> <br/>
-
+            {% if user_id %}
                 Like the photo ?
             <form action="/addLike" method="post">
             <input type="submit"  name="new comment" value="LIKE!" style="width: 120px">
             <input type="hidden" name="photo_id"  readonly="readonly" value={{ photo_id }}>
             </form>
+            {% endif %}
             {% if like_message %}
     <p style="color:#FF0000";>{{ like_message }}</p>
 {% endif %}

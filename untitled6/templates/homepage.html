@@ -6,7 +6,7 @@
 <meta name="HandheldFriendly" content="True">
 <meta name="MobileOptimized" content="320">
 <meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Opineo, Feedback Collection and Polling Widget - Documentation</title>
+<title>Homepage</title>
 <link rel="alternate" type="application/rss+xml" title="egrappler.com" href="feed/index.html">
 <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='prettify.css')}}">
 <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='style.css')}}">
@@ -14,11 +14,11 @@
 <body >
 <nav>
   <div class="container">
-    <h1>PA1</h1>
+    <h1><a href="/">PA1</a></h1>
     <div id="menu">
       <ul class="toplinks">
           {% if user %}
-                <li>hello,{{ user[0][0] }} </li>
+                <li style="color: white;padding: 14px;">hello,{{ user[0][0] }} </li>
                 <li><a href="personal">person center</a></li>
                 <li><a href="/logout">logout</a></li>
 
@@ -46,7 +46,11 @@
 {% endif %}
     </ul>
     <div class="docs-content">
-      <h2> Welcome</h2>
+{% if user %}
+      <h2> Welcome,{{ user[0][3] }}</h2>
+{% else %}
+<h2> Welcome,you do not log in yet</h2>
+{% endif %}
       <h3 id="welcome"> Top 10 user</h3>
 
       <ul>
