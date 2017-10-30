@@ -434,6 +434,8 @@ def search():
             addf = excuteQuery(sql3)
             if ouser:
                 return render_template('userProfile.html', ouser=ouser, user_id=user_id, albums=albums, addf=addf)
+            else:
+                return render_template('userProfile.html', ouser=ouser, user_id=user_id, albums=albums, addf=addf)
         if searchType=='tags':
             tags=searchContent
             tag=[]

@@ -38,6 +38,7 @@
 <section>
   <div class="container">
     <ul class="docs-nav" id="menu-left">
+ {% if ouser %}
       <li><strong>add Friends</strong></li>
  {% if user_id %}
  {% if user_id==ouser[0][0] %}
@@ -93,7 +94,11 @@
                <li><input type="text" name="tags"></li>
                <li><input type="submit" value="search"></li>
          </form>
+    {% else %}
+     no such user
+            {% endif %}
         </ur>
+
             <hr>
     </div>
   </div>
