@@ -1,0 +1,95 @@
+
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="description" content="">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Homepage</title>
+<link rel="alternate" type="application/rss+xml" title="egrappler.com" href="feed/index.html">
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='prettify.css')}}">
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='style.css')}}">
+</head>
+<body >
+<nav>
+  <div class="container">
+    <h1><a href="/">PA1</a></h1>
+    <div id="menu">
+      <ul class="toplinks">
+          {% if user %}
+                <li style="color: white;padding: 14px;">hello,{{ user[0][0] }} </li>
+                <li><a href="personal">person center</a></li>
+                <li><a href="/logout">logout</a></li>
+
+          {% else %}
+              <li><a href="login">sign in</a></li>
+              <li><a href="signup">sign up</a></li>
+          {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+<header>
+  <div class="container">
+    <h2 class="docs-header"> Homepage</h2>
+  </div>
+</header>
+<section>
+  <div class="container">
+    <ul class="docs-nav" id="menu-left">
+      <li><strong>top5 Tag</strong></li>
+{% if top5tag %}
+    {% for row in top5tag %}
+        <li><a href="/tagSearch?tag={{ row[0] }}" class=" ">{{ row[0] }} </a>{{ row[1] }}pictures </li>
+    {% endfor %}
+{% endif %}
+    </ul>
+    <div class="docs-content">
+{% if user %}
+      <h2> Welcome,{{ user[0][3] }}</h2>
+{% else %}
+<h2> Welcome,you do not log in yet</h2>
+{% endif %}
+      <h3 id="welcome"> Top 10 user</h3>
+
+      <ul>
+{% if top10User %}
+    <li>user_id:   </li>
+    {% for row in top10User %}
+            <li><a href="/userProfile?ouser_id={{ row[0] }}" class="btn">{{ row[0] }}</a> --{{ row[1] }}contribution points </li>
+
+    {% endfor %}
+{% endif %}
+      </ul>
+
+      <h3 id="benefits"> search</h3>
+        <ul>
+        <form action="/search" method="post">
+            Search Type
+            <li><input type="radio" name="searchType" value="users" checked="checked" style="width: 10px"/>user search(by user_id)</li>
+            <li><input type="radio" name="searchType" value="comments" style="width: 10px">comment search</li>
+            <li><input type="radio" name="searchType" value="tags" style="width: 10px">photo search(by tags)</li>
+            Content
+            <li><input type="text" name="searchContent"></li>
+            <li><input type="submit" value="search"></li>
+        </form>
+        </ul>
+      <hr>
+    </div>
+  </div>
+</section>
+<section class="vibrant centered">
+  <div class="container">
+    <h4> CS660 Project Assignment1</h4>
+  </div>
+</section>
+<footer>
+  <div class="container">
+    <p> yueh ying lee U41222261 And Zhong tu U89072077</p>
+  </div>
+</footer>
+
+
+</body>
+</html>
